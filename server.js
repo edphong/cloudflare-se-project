@@ -1,18 +1,24 @@
-// server.js
 const http = require('http');
 
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
 
+  // Block direct access - only allow requests coming through Cloudflare
+  const cfConnectingIP = req.headers['cf-connecting-ip'];
+  if (!cfConnectingIP) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('Access denied - Direct access not permitted');
+    return;
+  }
+
   // Extract the real client IP - Cloudflare passes this via X-Forwarded-For
-  // Without this, we'd only ever see Cloudflare's IP, not the real user's
   const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-  // Log every incoming request - useful for showing live in Railway's log stream during demo
+  // Log every incoming request
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Client IP: ${clientIP}`);
 
-  // Health check endpoint - confirms server is alive to Cloudflare and Railway
+  // Health check endpoint
   if (req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('OK');
@@ -22,8 +28,6 @@ const server = http.createServer((req, res) => {
   // Main response
   res.writeHead(200, {
     'Content-Type': 'text/plain',
-    // This custom header proves in your demo that the response is coming
-    // from YOUR origin server, not from Cloudflare's cache
     'X-Origin-Server': 'my-railway-origin',
   });
 
