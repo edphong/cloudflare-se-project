@@ -1,28 +1,18 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "cloudflared",
-	"compatibility_date": "2026-05-03",
-	"observability": {
-		"enabled": true
-	},
-	"assets": {
-		"directory": "_site"
-	},
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"r2_buckets": [
-		{
-			"bucket_name": "flag-images",
-			"binding": "flag_images"
-		}
-	],
-	"d1_databases": [
-		{
-			"binding": "flag_database",
-			"database_name": "flag-database",
-			"database_id": "a269f6ed-7eb0-4060-a93b-8eeeacf5aad4",
-			"remote": true
-		}
-	]
+  "name": "identity-worker",
+  "main": "src/index.js",
+  "compatibility_date": "2024-01-01",
+  "r2_buckets": [
+    {
+      "binding": "FLAGS",
+      "bucket_name": "flag-images"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "flag-database",
+      "database_id": "a269f6ed-7eb0-4060-a93b-8eeeacf5aad4"
+    }
+  ]
 }
