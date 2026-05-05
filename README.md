@@ -1,5 +1,4 @@
 # Cloudflare SE Take-Home Assessment
-**Candidate:** Ed Phong  
 **Domain:** [www.manifestflow.net](https://www.manifestflow.net)  
 **Worker:** [identity-worker.edphong.workers.dev](https://identity-worker.edphong.workers.dev)
 
@@ -37,8 +36,14 @@ either R2 or D1 depending on the endpoint.
 | Endpoint | Description |
 |----------|-------------|
 | `https://identity-worker.edphong.workers.dev` | Identity string — email, timestamp, country |
-| `https://identity-worker.edphong.workers.dev/flags/AU` | Country flag served from private R2 bucket |
-| `https://identity-worker.edphong.workers.dev/flags-d1/AU` | Country flag served from D1 database |
+| `https://identity-worker.edphong.workers.dev/flags/AU` | Australian flag served from private R2 bucket |
+| `https://identity-worker.edphong.workers.dev/flags/JP` | Japanese flag served from private R2 bucket |
+| `https://identity-worker.edphong.workers.dev/flags/US` | American flag served from private R2 bucket |
+| `https://identity-worker.edphong.workers.dev/flags/GB` | British flag served from private R2 bucket |
+| `https://identity-worker.edphong.workers.dev/flags-d1/AU` | Australian flag served from D1 database |
+| `https://identity-worker.edphong.workers.dev/flags-d1/JP` | Japanese flag served from D1 database |
+| `https://identity-worker.edphong.workers.dev/flags-d1/US` | American flag served from D1 database |
+| `https://identity-worker.edphong.workers.dev/flags-d1/GB` | British flag served from D1 database |
 
 ---
 
@@ -47,7 +52,7 @@ either R2 or D1 depending on the endpoint.
 The `/secure` path is protected by Cloudflare Access with GitHub SSO.
 
 Only the following identities are permitted:
-- `edwoodphong@gmail.com`
+- Specific Test User
 - Any `@cloudflare.com` email address
 
 To test access as an authorised user, use the provided test GitHub account credentials included in the submission email.
