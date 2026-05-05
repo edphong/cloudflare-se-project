@@ -17,21 +17,21 @@ This project demonstrates a full Cloudflare implementation across three areas:
 ## Architecture
 
 Visitor
-│
-▼
+  │
+  ▼
 Cloudflare Edge (WAF, Rate Limiting, TLS)
-│
-├── www.manifestflow.net
-│     │
-│     └── Cloudflare Tunnel → Origin Server (Railway)
-│           └── /secure → Protected by Cloudflare Access (GitHub SSO)
-│
-└── identity-worker.edphong.workers.dev
-│
-├── /              → Identity string (email, timestamp, country)
-├── /flags/:cc     → Country flag from private R2 bucket
-└── /flags-d1/:cc  → Country flag from D1 database
-
+  │
+  ├── www.manifestflow.net
+  │     │
+  │     └── Cloudflare Tunnel → Origin Server (Railway)
+  │           └── /secure → Protected by Cloudflare Access (GitHub SSO)
+  │
+  └── identity-worker.edphong.workers.dev
+        │
+        ├── /              → Identity string (email, timestamp, country)
+        ├── /flags/:cc     → Country flag from private R2 bucket
+        └── /flags-d1/:cc  → Country flag from D1 database
+        
 ---
 
 ## Live Demo
@@ -69,13 +69,13 @@ All other identities will receive a Cloudflare Access **denied** page.
 ## Project Structure
 
 cloudflare-se-project/
-├── server.js                 # Origin server (Node.js)
+├── server.js
 ├── identity-worker/
 │   ├── src/
-│   │   └── index.js          # Worker code (identity, R2, D1 routes)
-│   ├── schema.sql            # D1 database schema
-│   ├── seed.js               # D1 seeding script (generates SQL batches)
-│   └── wrangler.jsonc        # Worker config (R2 + D1 bindings)
+│   │   └── index.js
+│   ├── schema.sql
+│   ├── seed.js
+│   └── wrangler.jsonc
 └── README.md
 
 ---
