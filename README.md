@@ -63,6 +63,9 @@ All other identities will receive a Cloudflare Access **denied** page.
 
 Only required if you want to clone and deploy your own version.
 
+> **Note:** The seeding scripts use bash syntax. 
+> Windows users should run these commands in WSL or Git Bash.
+
 ### Prerequisites
 - Node.js 18+
 - Wrangler CLI (`npm install -g wrangler`)
