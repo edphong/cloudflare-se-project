@@ -52,7 +52,7 @@ A test GitHub account has been provided for authentication testing.
 Credentials are included in the submission email.
 
 Only the following identities are permitted through the Access policy:
-- `edwoodphong@gmail.com`
+- Test Account Provided
 - Any `@cloudflare.com` email address
 
 All other identities will receive a Cloudflare Access **denied** page.
