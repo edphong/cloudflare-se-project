@@ -90,14 +90,19 @@ npx wrangler login
 ```
 
 ### 4. Create R2 bucket and upload flags
+
+Create a folder called `png1000px` in your project root and add your flag PNG files there, then:
+
 ```bash
 npx wrangler r2 bucket create flag-images
 
-cd ../png1000px
+cd png1000px
 for f in *.png; do
   npx wrangler r2 object put "flag-images/$f" --file "$f" --remote
 done
 ```
+
+> **Note:** Replace `flag-images` with a unique bucket name if this one already exists in your Cloudflare account. If you change the bucket name, update the `binding` in `identity-worker/wrangler.jsonc` to match.
 
 ### 5. Create D1 database and seed flags
 ```bash
