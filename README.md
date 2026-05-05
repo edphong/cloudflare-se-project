@@ -23,8 +23,6 @@ either R2 or D1 depending on the endpoint.
         
 ---
 
-## Live Demo
-
 ### Origin Server
 | Endpoint | Description |
 |----------|-------------|
@@ -32,51 +30,44 @@ either R2 or D1 depending on the endpoint.
 | `https://cloudflare-se-project-production.up.railway.app` | Direct Railway URL — blocked (403) |
 | `https://www.manifestflow.net/secure` | Zero Trust protected path — requires GitHub authentication |
 
-### Cloudflare Worker
-| Endpoint | Description |
-|----------|-------------|
-| `https://identity-worker.edphong.workers.dev` | Identity string — email, timestamp, country |
-| `https://identity-worker.edphong.workers.dev/flags/AU` | Australian flag served from private R2 bucket |
-| `https://identity-worker.edphong.workers.dev/flags/JP` | Japanese flag served from private R2 bucket |
-| `https://identity-worker.edphong.workers.dev/flags/US` | American flag served from private R2 bucket |
-| `https://identity-worker.edphong.workers.dev/flags/GB` | British flag served from private R2 bucket |
-| `https://identity-worker.edphong.workers.dev/flags-d1/AU` | Australian flag served from D1 database |
-| `https://identity-worker.edphong.workers.dev/flags-d1/JP` | Japanese flag served from D1 database |
-| `https://identity-worker.edphong.workers.dev/flags-d1/US` | American flag served from D1 database |
-| `https://identity-worker.edphong.workers.dev/flags-d1/GB` | British flag served from D1 database |
+## Demo — No Setup Required
 
----
+All infrastructure is already deployed and live. To test:
 
-## Authentication
+| Step | URL | Expected Result |
+|------|-----|-----------------|
+| 1 | `https://www.manifestflow.net` | Main site loads |
+| 2 | `https://cloudflare-se-project-production.up.railway.app` | Direct origin URL — blocked (403) |
+| 3 | `https://www.manifestflow.net/secure` | GitHub login prompt appears |
+| 4 | `https://identity-worker.edphong.workers.dev` | GitHub login → identity string displays |
+| 5 | Click country link on identity page | Country flag loads from private R2 bucket |
+| 6 | `https://identity-worker.edphong.workers.dev/flags/AU` | Australian flag from R2 |
+| 7 | `https://identity-worker.edphong.workers.dev/flags/JP` | Japanese flag from R2 |
+| 8 | `https://identity-worker.edphong.workers.dev/flags-d1/AU` | Australian flag from D1 |
+| 9 | `https://identity-worker.edphong.workers.dev/flags-d1/JP` | Japanese flag from D1 |
 
-The `/secure` path is protected by Cloudflare Access with GitHub SSO.
+### Test Account
 
-Only the following identities are permitted:
-- Specific Test User
+A test GitHub account has been provided for authentication testing.
+Credentials are included in the submission email.
+
+Only the following identities are permitted through the Access policy:
+- `edwoodphong@gmail.com`
 - Any `@cloudflare.com` email address
-
-To test access as an authorised user, use the provided test GitHub account credentials included in the submission email.
 
 All other identities will receive a Cloudflare Access **denied** page.
 
 ---
 
-## Project Structure
+## Setup & Deployment — For Running Your Own Instance
 
-- `server.js` — Node.js origin server
-- `identity-worker/src/index.js` — Worker code handling identity, R2 and D1 routes
-- `identity-worker/schema.sql` — D1 database schema
-- `identity-worker/seed.js` — D1 seeding script
-- `identity-worker/wrangler.jsonc` — Worker config with R2 and D1 bindings
-
----
-
-## Setup & Deployment
+Only required if you want to clone and deploy your own version.
 
 ### Prerequisites
 - Node.js 18+
 - Wrangler CLI (`npm install -g wrangler`)
-- Cloudflare account with Zero Trust and R2 enabled
+- Cloudflare account with Zero Trust, R2, and D1 enabled
+- Flag PNG assets (256 country flags, 1000px)
 
 ### 1. Clone the repository
 ```bash
@@ -120,10 +111,29 @@ for f in seed-batch-*.sql; do
 done
 ```
 
+> **Note:** Some larger flag images may fail with `SQLITE_TOOBIG` during seeding.
+> This is a known D1 limitation with binary data — see Known Limitations section for details.
+
 ### 6. Deploy Worker
 ```bash
 cd identity-worker
 npx wrangler deploy
+```
+
+### 7. Configure Cloudflare Access
+In the Cloudflare Zero Trust dashboard:
+- Add GitHub as an Identity Provider under `Integrations → Identity providers`
+- Create a self-hosted application for `identity-worker.<your-subdomain>.workers.dev`
+- Add an access policy allowing your email and `@cloudflare.com` domain
+
+### 8. Configure Cloudflare Tunnel
+```bash
+cloudflared tunnel login
+cloudflared tunnel create my-tunnel
+cloudflared tunnel route dns my-tunnel www.yourdomain.com
+sudo cloudflared --config ~/.cloudflared/config.yml service install
+sudo systemctl enable cloudflared
+sudo systemctl start cloudflared
 ```
 
 ---
