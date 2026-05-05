@@ -23,6 +23,16 @@ either R2 or D1 depending on the endpoint.
         
 ---
 
+## Project Structure
+
+- `server.js` — Node.js origin server
+- `identity-worker/src/index.js` — Worker code
+- `identity-worker/schema.sql` — D1 database schema
+- `identity-worker/seed.js` — D1 seeding script
+- `identity-worker/wrangler.jsonc` — Worker config
+
+---
+
 ### Origin Server
 | Endpoint | Description |
 |----------|-------------|
