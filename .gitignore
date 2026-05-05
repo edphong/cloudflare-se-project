@@ -1,2 +1,5 @@
 seed-batch-*.sql
 seed.sql
+png1000px/
+identity-worker/seed-batch-*.sql
+identity-worker/seed.sql
