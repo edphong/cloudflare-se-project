@@ -16,21 +16,11 @@ This project demonstrates a full Cloudflare implementation across three areas:
 
 ## Architecture
 
-Visitor
-  │
-  ▼
-Cloudflare Edge (WAF, Rate Limiting, TLS)
-  │
-  ├── www.manifestflow.net
-  │     │
-  │     └── Cloudflare Tunnel → Origin Server (Railway)
-  │           └── /secure → Protected by Cloudflare Access (GitHub SSO)
-  │
-  └── identity-worker.edphong.workers.dev
-        │
-        ├── /              → Identity string (email, timestamp, country)
-        ├── /flags/:cc     → Country flag from private R2 bucket
-        └── /flags-d1/:cc  → Country flag from D1 database
+Traffic flows from the visitor through Cloudflare's edge (WAF, rate limiting, TLS) 
+to either the origin server via Cloudflare Tunnel, or directly to the Cloudflare 
+Worker. The `/secure` path on the origin server is protected by Cloudflare Access 
+with GitHub SSO. The Worker serves identity information and country flags from 
+either R2 or D1 depending on the endpoint.
         
 ---
 
@@ -68,15 +58,11 @@ All other identities will receive a Cloudflare Access **denied** page.
 
 ## Project Structure
 
-cloudflare-se-project/
-├── server.js
-├── identity-worker/
-│   ├── src/
-│   │   └── index.js
-│   ├── schema.sql
-│   ├── seed.js
-│   └── wrangler.jsonc
-└── README.md
+- `server.js` — Node.js origin server
+- `identity-worker/src/index.js` — Worker code handling identity, R2 and D1 routes
+- `identity-worker/schema.sql` — D1 database schema
+- `identity-worker/seed.js` — D1 seeding script
+- `identity-worker/wrangler.jsonc` — Worker config with R2 and D1 bindings
 
 ---
 
